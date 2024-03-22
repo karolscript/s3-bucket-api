@@ -4,7 +4,6 @@ import axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
 
-AWS.config.update({region: 'REGION'});
 const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
 @Controller('s3')
@@ -28,9 +27,11 @@ export class S3Controller {
         Bucket: bucket,
         Key: fileName,
       };
-  
+
+      const fullDownloadPath = path.join(downloadPath, fileName);
+
       const data = await s3.getObject(downloadParams).promise();
-      fs.writeFileSync(downloadPath, data.Body as Buffer);
+      fs.writeFileSync(fullDownloadPath, data.Body as Buffer);
       return 'Download Success';
     }
   

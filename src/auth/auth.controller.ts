@@ -10,6 +10,11 @@ export class AuthController {
     return this.authService.validateUser(email, password);
   }
 
+  @Post('logout')
+  async logout(@Body('email') email: string) {
+    return this.authService.logout(email);
+  }
+
   @Put('password-recovery')
   async passwordRecovery(@Body('email') email: string) {
     return this.authService.recoverPassword(email);
