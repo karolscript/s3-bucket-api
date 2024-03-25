@@ -22,6 +22,20 @@ export class AuthService {
     return "No se encontró o la contraseña es inválida";
   }
 
+  async validateUserToken(token: string): Promise<any> {
+    try {
+      const decodedToken = await this.jwtService.decode(token);
+      const user = await this.userService.findOne(decodedToken.email);
+      if (user && user.access_token === token) {
+        return user;
+      }
+      return null;
+      
+    } catch (error) {
+      return error;
+    }
+  }
+
   async login(user: User) {
     const payload = { email: user.email, password: user.password };
     user.access_token = this.jwtService.sign(payload);

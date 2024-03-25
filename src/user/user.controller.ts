@@ -6,8 +6,6 @@ import { User } from '../schemas/user.schema';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-
-  //TODO: handle response codes
   @Post('register')
   async register(@Body() user: User) {
     return this.userService.create(user);

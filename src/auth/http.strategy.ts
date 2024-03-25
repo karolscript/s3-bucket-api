@@ -1,20 +1,19 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import axios from 'axios';
 import { Strategy } from 'passport-http-bearer';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class HttpStrategy extends PassportStrategy(Strategy) {
-  async validate(token: string): Promise<any> {
-    // Validate the token with your OAuth server
-    const user = await axios.get('https://your-auth-server.com/userinfo', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  constructor(private readonly authService: AuthService) {
+    super();
+  }
 
+  async validate(token: string) {
+    const user = await this.authService.validateUserToken(token);
     if (!user) {
       throw new UnauthorizedException();
     }
-
     return user;
   }
 }

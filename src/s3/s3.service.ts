@@ -1,15 +1,17 @@
-// s3.service.ts
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import * as axios from 'axios';
 import * as fs from 'fs';
 import * as path from 'path';
+import { AxiosResponse } from 'axios';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { String } from 'aws-sdk/clients/batch';
 
 @Injectable()
 export class S3Service {
   private s3: AWS.S3;
 
-  constructor() {
+  constructor(private readonly httpService: HttpService) {
     this.s3 = new AWS.S3({apiVersion: '2006-03-01'});
   }
 
@@ -65,5 +67,42 @@ export class S3Service {
     } catch (error) {
       return error.message;
     }
+  }
+
+  async list(bucket: string) {
+    const listParams = {
+      Bucket: bucket,
+    };
+
+    const data = await this.s3.listObjectsV2(listParams).promise();
+    return 'Files: ' + data.Contents?.map(file => file.Key).join(', ');
+  }
+
+  async uploadFileFromServer(url: string, bucket: string): Promise<string> {
+    try{
+      const response: AxiosResponse<any> = await lastValueFrom(this.httpService.get(url, {
+        responseType: 'stream',
+      }));
+  
+      const params = {
+        Bucket: bucket,
+        Key: this.getFileNameFromUrl(url),
+        Body: response.data,
+      };
+  
+      await this.s3.upload(params).promise();
+
+      return "Upload Success";
+
+    } catch(err){
+       return err.message;
+    }
+  }
+
+  getFileNameFromUrl = (url: String) => {
+    let urlObj = new URL(url);
+    let pathComponents = urlObj.pathname.split('/');
+    let fileName = pathComponents[pathComponents.length - 1];
+    return fileName;
   }
 }
