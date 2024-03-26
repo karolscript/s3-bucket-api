@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { UnsplashModule } from './unsplash/unsplash.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       }),
       inject: [ConfigService],
     }),
+    UnsplashModule,
   ],
   controllers: [AppController],
   providers: [AppService],
