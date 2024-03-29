@@ -29,6 +29,7 @@
     "@nestjs/mongoose": "^10.0.4",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^7.3.0",
     "aws-sdk": "^2.1583.0",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
@@ -39,7 +40,8 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
